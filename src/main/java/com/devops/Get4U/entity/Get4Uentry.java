@@ -1,5 +1,8 @@
 package com.devops.Get4U.entity;
 
+import java.time.LocalDateTime;
+
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -7,15 +10,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Get4Uentry
 {
     @Id
-    private String id;
+    private ObjectId id;
     private String title;    
     private String content;
-   
+    private LocalDateTime date;
 
-    public void setId(String id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
-    public String getId() {
+    public ObjectId getId() {
         return id;
     }
 
@@ -32,7 +35,12 @@ public class Get4Uentry
     public String getContent() {
         return content;
     }
-   
-    
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+    public LocalDateTime getDate() {
+        return date;
+    }
 
 }

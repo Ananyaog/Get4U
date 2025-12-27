@@ -1,5 +1,6 @@
 package com.devops.Get4U.controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,12 +36,13 @@ public class EntrycontrollerV2
     @GetMapping // localhost:8080/entry (GET)
     public List<Get4Uentry> getAllEntries()
     {
-     return null;
+     return service.getall();
     }
 
     @PostMapping    // localhost:8080/entry (POST)
     public boolean createEntry(@RequestBody Get4Uentry identifier)
     {
+        identifier.setDate(LocalDateTime.now());
         service.saveentry(identifier);
         return true;
     }
@@ -48,8 +50,7 @@ public class EntrycontrollerV2
     @GetMapping("id/{myId}")  // localhost:8080/entry/id/"Write desired ID" (GET)
     public Get4Uentry callbyid(@PathVariable long myId)
     {
-     
-     return null;
+       return null;
     }
 
     @DeleteMapping("id/{myId}")
