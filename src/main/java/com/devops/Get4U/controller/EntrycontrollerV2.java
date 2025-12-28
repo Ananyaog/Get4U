@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,32 +42,39 @@ public class EntrycontrollerV2
     }
 
     @PostMapping    // localhost:8080/entry (POST)
-    public boolean createEntry(@RequestBody Get4Uentry identifier)
+    public Get4Uentry createEntry(@RequestBody Get4Uentry identifier)
     {
         identifier.setDate(LocalDateTime.now());
         service.saveentry(identifier);
-        return true;
+        return identifier;
     }
 
     @GetMapping("id/{myId}")  // localhost:8080/entry/id/"Write desired ID" (GET)
-    public Get4Uentry callbyid(@PathVariable long myId)
+    public Get4Uentry callbyid(@PathVariable ObjectId myId)
     {
-       return null;
+        return service.findbyid(myId).orElse(null);
+      
     }
 
     @DeleteMapping("id/{myId}")
-    public boolean deletentry(@PathVariable long myId) {
-        
-     return true;
+    public boolean deletentry(@PathVariable ObjectId myId)
+     {
+        service.deletebyid(myId);
+        return true;
     }
 
     @PutMapping("id/{myId}")
-    public Get4Uentry putMethodName(@PathVariable long myId, @RequestBody Get4Uentry identifier) 
+    public Get4Uentry putMethodName(@PathVariable ObjectId myId, @RequestBody Get4Uentry new_identifier) 
     {
         //TODO: process PUT request
-        
-        
-     return null;
+       Get4Uentry existing_identifier=service.findbyid(myId).orElse(null);
+       if(existing_identifier!=null)
+       {
+        existing_identifier.setTitle(new_identifier !=null && !new_identifier.getTitle().equals("") ? new_identifier.getTitle():existing_identifier.getTitle());
+        existing_identifier.setContent(new_identifier !=null && !new_identifier.getContent().equals("") ? new_identifier.getContent():existing_identifier.getContent());
+       }
+        service.saveentry(existing_identifier);
+        return existing_identifier;
     }
     
 }
