@@ -36,45 +36,63 @@ public class EntrycontrollerV2
     private Get4Uservice service;
 
     @GetMapping // localhost:8080/entry (GET)
-    public List<Get4Uentry> getAllEntries()
+    public ResponseEntity<List<Get4Uentry>> getAllEntries()
     {
-     return service.getall();
+        List <Get4Uentry> all = new ArrayList<>();
+        if(all!=null && !all.isEmpty())
+        {
+            return new ResponseEntity<>(all,HttpStatus.OK);
+        }
+        
+     return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping    // localhost:8080/entry (POST)
-    public Get4Uentry createEntry(@RequestBody Get4Uentry identifier)
+    public ResponseEntity<Get4Uentry> createEntry(@RequestBody Get4Uentry identifier)
     {
-        identifier.setDate(LocalDateTime.now());
-        service.saveentry(identifier);
-        return identifier;
+        try{
+             identifier.setDate(LocalDateTime.now());
+             service.saveentry(identifier);
+            return new ResponseEntity<>(identifier, HttpStatus.CREATED);
+         }
+         catch(Exception e)
+         {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+         }
+
     }
 
     @GetMapping("id/{myId}")  // localhost:8080/entry/id/"Write desired ID" (GET)
-    public Get4Uentry callbyid(@PathVariable ObjectId myId)
+    public ResponseEntity<Get4Uentry> callbyid(@PathVariable ObjectId myId)
     {
-        return service.findbyid(myId).orElse(null);
-      
+       Optional<Get4Uentry> entry = service.findbyid(myId);
+       if(entry.isPresent()) 
+       {
+        return new ResponseEntity<>(entry.get(),HttpStatus.OK);
+       }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("id/{myId}")
-    public boolean deletentry(@PathVariable ObjectId myId)
+    public ResponseEntity<?> deletentry(@PathVariable ObjectId myId)
      {
         service.deletebyid(myId);
-        return true;
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("id/{myId}")
-    public Get4Uentry putMethodName(@PathVariable ObjectId myId, @RequestBody Get4Uentry new_identifier) 
+    public ResponseEntity<?> putMethodName(@PathVariable ObjectId myId, @RequestBody Get4Uentry new_identifier) 
     {
         //TODO: process PUT request
        Get4Uentry existing_identifier=service.findbyid(myId).orElse(null);
-       if(existing_identifier!=null)
+       if(existing_identifier != null)
        {
         existing_identifier.setTitle(new_identifier !=null && !new_identifier.getTitle().equals("") ? new_identifier.getTitle():existing_identifier.getTitle());
         existing_identifier.setContent(new_identifier !=null && !new_identifier.getContent().equals("") ? new_identifier.getContent():existing_identifier.getContent());
+         service.saveentry(existing_identifier);
+        return new ResponseEntity<>(existing_identifier,HttpStatus.OK);
        }
-        service.saveentry(existing_identifier);
-        return existing_identifier;
+       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     
 }
