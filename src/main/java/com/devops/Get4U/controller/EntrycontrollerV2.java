@@ -54,7 +54,7 @@ public class EntrycontrollerV2
              identifier.setDate(LocalDateTime.now());
              service.saveentry(identifier);
             return new ResponseEntity<>(identifier, HttpStatus.CREATED);
-         }
+             }
          catch(Exception e)
          {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
