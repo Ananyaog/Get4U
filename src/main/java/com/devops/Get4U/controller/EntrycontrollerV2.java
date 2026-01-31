@@ -83,7 +83,7 @@ public class EntrycontrollerV2
     @PutMapping("id/{myId}")
     public ResponseEntity<?> putMethodName(@PathVariable ObjectId myId, @RequestBody Get4Uentry new_identifier) 
     {
-        //TODO: process PUT request
+        
        Get4Uentry existing_identifier=service.findbyid(myId).orElse(null);
        if(existing_identifier != null)
        {
