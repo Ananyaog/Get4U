@@ -22,12 +22,17 @@ public class UserService
 
     public List<User> getAllUsers()  // Get all users function
     {
-        return userRepo.findAll();
+        return userRepository.findAll();
     }
 
     public Optional<User> findUserById (ObjectId id)  // Find user by ID function
     {
-        return userRepo.findById(id);
+        return userRepository.findById(id);
+    }
+
+    public User findByUsername(String username) // Find user by username function
+    {
+        return userRepository.findByUsername(username);
     }
 
 }
