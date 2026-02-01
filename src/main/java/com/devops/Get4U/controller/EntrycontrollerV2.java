@@ -2,9 +2,8 @@ package com.devops.Get4U.controller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 import java.util.Optional;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +21,7 @@ import com.devops.Get4U.service.Get4Uservice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.PutMapping;
 
 
