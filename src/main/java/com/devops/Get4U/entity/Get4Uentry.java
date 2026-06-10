@@ -19,5 +19,5 @@ public class Get4Uentry
     @NonNull
     private String title;    
     private String content;
-    private LocalDateTime date;
+    private LocalDateTime date;  
 }

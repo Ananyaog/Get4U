@@ -20,12 +20,12 @@ public class User
     @Id
     private ObjectId id;
     @Indexed (unique=true)
-    @NonNull
+    @NonNull  // From lombok
     private String username;
     @NonNull
     private String password;
 
-    @DBRef
+    @DBRef  // Creating reference in 'users' collection from 'get4uentries' collection (Act like foreign key principles i.e linking 2 existing collection)
     private List<Get4Uentry> get4uentries=new ArrayList<>();
 
 }

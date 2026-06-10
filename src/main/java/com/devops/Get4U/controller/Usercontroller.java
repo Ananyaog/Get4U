@@ -59,5 +59,7 @@ public class Usercontroller
       }
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    // Delete functionality not implemented yet
     
 }
