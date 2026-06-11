@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import com.devops.Get4U.entity.Get4Uentry;
+import com.devops.Get4U.entity.User;
 import com.devops.Get4U.repository.Get4Urepo;
 import java.util.Optional;
 
@@ -33,4 +34,7 @@ public class Get4Uservice
     {
         repo.deleteById(id);
     }
+
+    
+
 }

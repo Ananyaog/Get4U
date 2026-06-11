@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.devops.Get4U.entity.Get4Uentry;
+import com.devops.Get4U.entity.User;
 import com.devops.Get4U.service.Get4Uservice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,10 +35,11 @@ public class EntrycontrollerV2
     @Autowired
     private Get4Uservice service;
 
-    @GetMapping // localhost:8080/entry (GET)
-    public ResponseEntity<List<Get4Uentry>> getAllEntries()
+    @GetMapping("{username}") // localhost:8080/entry (GET)
+    public ResponseEntity<?> getAllEntriesOfuser(@PathVariable String username)
     {
-        List <Get4Uentry> all = new ArrayList<>();
+        User User=service.findbyUserName(username);
+        List <Get4Uentry> all = User.getGet4uentries();
         if(all!=null && !all.isEmpty())
         {
             return new ResponseEntity<>(all,HttpStatus.OK);
@@ -51,7 +53,7 @@ public class EntrycontrollerV2
     {
         try{
              identifier.setDate(LocalDateTime.now());
-             service.saveentry(identifier);
+             service.saveentry(identifier); 
             return new ResponseEntity<>(identifier, HttpStatus.CREATED);
              }
          catch(Exception e)
