@@ -15,10 +15,23 @@ public class Get4Uservice
     @Autowired
     private Get4Urepo repo;  
 
+    @Autowired
+    private UserService userService;
+
     public void saveentry(Get4Uentry entry)  // Save entry function
     {
-        repo.save(entry);
+       repo.save(entry); // Saved in Get4U
     }
+
+        public void saveentry(Get4Uentry entry, String username)  // Save entry function (Handles PUT requests)
+    {
+        User user = userService.findByUsername(username);
+        Get4Uentry saved=repo.save(entry); // Saved in Get4U
+
+        user.getGet4uentries().add(saved); // Saving in User's Field
+        userService.saveUser(user);
+    }
+
 
     public List<Get4Uentry> getall()  // Get all entries function
     {
@@ -30,11 +43,13 @@ public class Get4Uservice
         return repo.findById(id);
     }
 
-    public void deletebyid(ObjectId id)  // Delete function
+    public void deletebyid(ObjectId id,String username)  // Delete function
     {
-        repo.deleteById(id);
-    }
+        User user = userService.findByUsername(username);
+        user.getGet4uentries().removeIf(x -> x.getId().equals(id));
+        userService.saveUser(user); // Saves new updated entries (After deleteing the Get4U entry)
 
-    
+        repo.deleteById(id); // Deletes Get4U entry
+    }
 
 }

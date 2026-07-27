@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.devops.Get4U.entity.Get4Uentry;
 import com.devops.Get4U.entity.User;
 import com.devops.Get4U.service.Get4Uservice;
+import com.devops.Get4U.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 
@@ -34,26 +36,31 @@ public class EntrycontrollerV2
 {
     @Autowired
     private Get4Uservice service;
+    @Autowired
+    private UserService userService;
 
-    @GetMapping("{username}") // localhost:8080/entry (GET)
+    @GetMapping("{username}") // localhost:8080/entry/{username} (GET)
     public ResponseEntity<?> getAllEntriesOfuser(@PathVariable String username)
-    {
-        User User=service.findbyUserName(username);
-        List <Get4Uentry> all = User.getGet4uentries();
+    {  
+    User user = userService.findByUsername(username); // Finds if username exists
+     if(user == null) {
+         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+     }
+        List <Get4Uentry> all = user.getGet4uentries();
         if(all!=null && !all.isEmpty())
         {
             return new ResponseEntity<>(all,HttpStatus.OK);
-        }
+        } 
         
-     return new ResponseEntity(HttpStatus.NOT_FOUND);
+     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping    // localhost:8080/entry (POST)
-    public ResponseEntity<Get4Uentry> createEntry(@RequestBody Get4Uentry identifier)
+    @PostMapping("{username}")    // localhost:8080/entry (POST)
+    public ResponseEntity<Get4Uentry> createEntry(@RequestBody Get4Uentry identifier,@PathVariable String username)
     {
         try{
              identifier.setDate(LocalDateTime.now());
-             service.saveentry(identifier); 
+             service.saveentry(identifier,username); 
             return new ResponseEntity<>(identifier, HttpStatus.CREATED);
              }
          catch(Exception e)
@@ -74,26 +81,27 @@ public class EntrycontrollerV2
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("id/{myId}")
-    public ResponseEntity<?> deletentry(@PathVariable ObjectId myId)
+    @DeleteMapping("id/{username}/{myId}")  // Deletes the entry of {username} completely from User's collections
+    public ResponseEntity<?> deletentry(@PathVariable ObjectId myId,@PathVariable String username)
      {
-        service.deletebyid(myId);
+        service.deletebyid(myId,username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+     }
 
-    @PutMapping("id/{myId}")
-    public ResponseEntity<?> putMethodName(@PathVariable ObjectId myId, @RequestBody Get4Uentry new_identifier) 
-    {
-        
-       Get4Uentry existing_identifier=service.findbyid(myId).orElse(null);
-       if(existing_identifier != null)
-       {
-        existing_identifier.setTitle(new_identifier !=null && !new_identifier.getTitle().equals("") ? new_identifier.getTitle():existing_identifier.getTitle());
-        existing_identifier.setContent(new_identifier !=null && !new_identifier.getContent().equals("") ? new_identifier.getContent():existing_identifier.getContent());
-         service.saveentry(existing_identifier);
-        return new ResponseEntity<>(existing_identifier,HttpStatus.OK);
-       }
-       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+     @PutMapping("id/{username}/{id}") // Bugged
+     public ResponseEntity<?> UpdateEntrybyid(@PathVariable ObjectId id, @RequestBody Get4Uentry new_entry,@PathVariable String username) 
+     {
+         Get4Uentry old=new Get4Uservice().findbyid(id).orElse(null);
+
+         if(old!=null)
+         {
+            old.setTitle(new_entry.getTitle()!=null && !new_entry.getTitle().equals("")?new_entry.getTitle():old.getTitle());
+            
+            old.setContent(new_entry.getContent()!=null && !new_entry.getContent().equals("")?new_entry.getContent():old.getContent());
+            
+         return new ResponseEntity<>(old,HttpStatus.OK);
+        }
+         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+     }
     
 }
