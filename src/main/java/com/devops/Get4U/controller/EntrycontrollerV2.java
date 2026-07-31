@@ -89,16 +89,17 @@ public class EntrycontrollerV2
      }
 
      @PutMapping("id/{username}/{id}") // Bugged
-     public ResponseEntity<?> UpdateEntrybyid(@PathVariable ObjectId id, @RequestBody Get4Uentry new_entry,@PathVariable String username) 
+     public ResponseEntity<?> UpdateEntrybyid( @RequestBody Get4Uentry new_entry,@PathVariable String username,@PathVariable ObjectId id) 
      {
-         Get4Uentry old=new Get4Uservice().findbyid(id).orElse(null);
+         Get4Uentry old=service.findbyid(id).orElse(null);
 
          if(old!=null)
          {
             old.setTitle(new_entry.getTitle()!=null && !new_entry.getTitle().equals("")?new_entry.getTitle():old.getTitle());
-            
+
             old.setContent(new_entry.getContent()!=null && !new_entry.getContent().equals("")?new_entry.getContent():old.getContent());
-            
+            service.saveentry(old);
+
          return new ResponseEntity<>(old,HttpStatus.OK);
         }
          return new ResponseEntity<>(HttpStatus.NOT_FOUND);
