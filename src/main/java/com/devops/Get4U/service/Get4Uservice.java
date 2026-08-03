@@ -3,6 +3,8 @@ package com.devops.Get4U.service;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import com.devops.Get4U.entity.Get4Uentry;
 import com.devops.Get4U.entity.User;
@@ -23,13 +25,23 @@ public class Get4Uservice
        repo.save(entry); // Saved in Get4U
     }
 
+    @Transactional // Achieve Atomicity
         public void saveentry(Get4Uentry entry, String username)  // Save entry function (Handles PUT requests)
     {
-        User user = userService.findByUsername(username);
-        Get4Uentry saved=repo.save(entry); // Saved in Get4U
+        try
+        {
+            User user = userService.findByUsername(username);
+            Get4Uentry saved=repo.save(entry); // Saved in Get4U
 
-        user.getGet4uentries().add(saved); // Saving in User's Field
-        userService.saveUser(user);
+            user.getGet4uentries().add(saved); // Saving in User's Field
+            userService.saveUser(user);
+        }
+        
+        catch(Exception e)
+        {
+            System.out.println(e);
+            throw new RuntimeException("Failed to save entry",e);
+        }
     }
 
 
