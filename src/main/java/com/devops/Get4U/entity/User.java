@@ -27,5 +27,6 @@ public class User
 
     @DBRef  // Creating reference in 'users' collection from 'get4uentries' collection (Act like foreign key principles i.e linking 2 existing collection)
     private List<Get4Uentry> get4uentries=new ArrayList<>();
+    private List<String> roles;
 
 }
