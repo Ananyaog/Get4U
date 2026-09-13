@@ -29,19 +29,7 @@ The current project is being developed incrementally, with the primary focus on 
 
 Get4U follows a layered architecture:
 
-Client
-   |
-   v
-Controller Layer
-   |
-   v
-Service Layer
-   |
-   v
-Repository Layer
-   |
-   v
-MongoDB Atlas
+Client -> Controller Layer -> Service Layer -> Repository Layer -> MongoDB Atlas
 
 
 ** Controller Layer
